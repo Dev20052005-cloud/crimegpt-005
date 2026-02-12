@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1><i class="fas fa-shield-alt"></i> Crime Management System</h1>
+                <p>Secure Login</p>
+            </div>
+            <div class="login-form">
+                <div class="input-group" id="username-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username">
+                    <span class="error-message">Please enter a valid username</span>
+                </div>
+                <div class="input-group" id="password-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password">
+                    <span class="error-message">Please enter your password</span>
+                </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+                <button type="button" id="login-btn" class="btn-primary">
+                    <span class="btn-text">Login</span>
+                    <span class="btn-loader"></span>
+                </button>
+                <p class="login-help">Default credentials</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container" id="dashboard-container" style="display: none;">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-shield-alt"></i> CMS</h3>
+                <button id="toggle-sidebar" class="toggle-btn"><i class="fas fa-bars"></i></button>
+            </div>
+            <ul class="menu">
+                <li class="active" data-tab="dashboard" aria-label="Dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></li>
+                <li data-tab="crimes" aria-label="Crime Records"><i class="fas fa-clipboard-list"></i> <span>Crime Records</span></li>
+                <li data-tab="add-crime" aria-label="Add New Crime"><i class="fas fa-plus-circle"></i> <span>Add New Crime</span></li>
+                <li data-tab="officers" aria-label="Officers"><i class="fas fa-user-shield"></i> <span>Officers</span></li>
+                <li data-tab="reports" aria-label="Reports"><i class="fas fa-chart-bar"></i> <span>Reports</span></li>
+                <li data-tab="settings" aria-label="Settings"><i class="fas fa-cog"></i> <span>Settings</span></li>
+                <li id="logout-btn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <header class="top-bar">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search cases, officers, reports...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-info-item">
+                        <span id="notification-bell"><i class="fas fa-bell"></i></span>
+                        <div class="dropdown-menu" id="notification-dropdown">
+                            <div class="dropdown-header">
+                                Notifications
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="notification-item unread">
+                                    <div class="notification-title">New case assigned</div>
+                                    <div class="notification-desc">Case #CR045 has been assigned to Officer John</div>
+                                    <span class="notification-time">2 hours ago</span>
+                                </div>
+                                <div class="notification-item unread">
+                                    <div class="notification-title">Evidence uploaded</div>
+                                    <div class="notification-desc">New evidence added to case #CR032</div>
+                                    <span class="notification-time">5 hours ago</span>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-title">Case status updated</div>
+                                    <div class="notification-desc">Case #CR028 marked as solved</div>
+                                    <span class="notification-time">Yesterday</span>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-title">System maintenance</div>
+                                    <div class="notification-desc">System will be down for maintenance tonight</div>
+                                    <span class="notification-time">2 days ago</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-footer">
+                                <a href="#">View all notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    <span id="current-user">Admin</span>
+                    <div class="user-info-item">
+                        <img src="User_icon_2.svg.webp" alt="User" class="avatar">
+                        <div class="dropdown-menu" id="user-dropdown">
+                            <div class="dropdown-header">
+                                Admin User
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>My Profile</span>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Account Settings</span>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Privacy Settings</span>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>Help & Support</span>
+                                </div>
+                                <div class="dropdown-item" id="profile-logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <section id="dashboard-tab" class="tab-content active">
+                <h2>Dashboard</h2>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total Cases</h3>
+                            <span class="stat-number">124</span>
+                            <span class="stat-change increase">+12% from last week</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Solved Cases</h3>
+                            <span class="stat-number">87</span>
+                            <span class="stat-change increase">+8% from last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pending Cases</h3>
+                            <span class="stat-number">37</span>
+                            <span class="stat-change decrease">-5% from last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Critical Cases</h3>
+                            <span class="stat-number">18</span>
+                            <span class="stat-change increase">+2% from last month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-card">
+                        <h3>
+                            <span><i class="fas fa-chart-line chart-icon"></i> Crime Trends</span>
+                            <div class="chart-actions">
+                                <button title="Download Chart"><i class="fas fa-download"></i></button>
+                                <button title="Refresh Data"><i class="fas fa-sync-alt"></i></button>
+                                <button title="View Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </h3>
+                        <div class="chart-container-inner">
+                            <canvas id="crime-trend-chart"></canvas>
+                        </div>
+                        <div class="chart-footer">
+                            <span>Updated: Today, 10:45 AM</span>
+                            <span>Source: Crime Database</span>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>
+                            <span><i class="fas fa-chart-pie chart-icon"></i> Crime Types</span>
+                            <div class="chart-actions">
+                                <button title="Download Chart"><i class="fas fa-download"></i></button>
+                                <button title="Refresh Data"><i class="fas fa-sync-alt"></i></button>
+                                <button title="View Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </h3>
+                        <div class="chart-container-inner">
+                            <canvas id="crime-type-chart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item"><span class="legend-color" style="background-color: #1a73e8"></span> Theft (30%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background-color: #dc3545"></span> Assault (20%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background-color: #ffc107"></span> Robbery (15%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background-color: #28a745"></span> Fraud (13%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background-color: #6c757d"></span> Homicide (7%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background-color: #17a2b8"></span> Other (15%)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-cases">
+                    <div class="section-header">
+                        <h3>Recent Cases</h3>
+                        <button class="btn-sm">View All</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Crime Type</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-cases-body">
+                            <!-- This will be filled with JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Crime Records Tab -->
+            <section id="crimes-tab" class="tab-content">
+                <h2>Crime Records</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="filter-status">Status:</label>
+                        <select id="filter-status">
+                            <option value="all">All</option>
+                            <option value="open">Open</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="solved">Solved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-crime-type">Crime Type:</label>
+                        <select id="filter-crime-type">
+                            <option value="all">All</option>
+                            <option value="theft">Theft</option>
+                            <option value="robbery">Robbery</option>
+                            <option value="assault">Assault</option>
+                            <option value="homicide">Homicide</option>
+                            <option value="fraud">Fraud</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-date-from">Date From:</label>
+                        <input type="date" id="filter-date-from">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-date-to">Date To:</label>
+                        <input type="date" id="filter-date-to">
+                    </div>
+                    <button id="apply-filters" class="btn-primary">Apply Filters</button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Case ID</th>
+                            <th>Crime Type</th>
+                            <th>Description</th>
+                            <th>Victim</th>
+                            <th>Location</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crimes-table-body">
+                        <!-- This will be filled with JavaScript -->
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <button id="prev-page"><i class="fas fa-chevron-left"></i></button>
+                    <span id="page-info">Page 1 of 5</span>
+                    <button id="next-page"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <!-- Add New Crime Tab -->
+            <section id="add-crime-tab" class="tab-content">
+                <h2>Add New Crime Record</h2>
+                <form id="add-crime-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="crime-type">Crime Type</label>
+                        <select id="crime-type" required>
+                            <option value="">Select type</option>
+                            <option value="theft">Theft</option>
+                            <option value="robbery">Robbery</option>
+                            <option value="assault">Assault</option>
+                            <option value="homicide">Homicide</option>
+                            <option value="fraud">Fraud</option>
+                            <option value="cybercrime">Cybercrime</option>
+                            <option value="vandalism">Vandalism</option>
+                            <option value="drug">Drug Related</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-date">Date & Time</label>
+                        <input type="datetime-local" id="crime-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-location">Location</label>
+                        <input type="text" id="crime-location" placeholder="Address where the crime occurred" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-victim">Victim Name</label>
+                        <input type="text" id="crime-victim" placeholder="Full name of the victim">
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-suspect">Suspect Name (if known)</label>
+                        <input type="text" id="crime-suspect" placeholder="Full name of the suspect">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="crime-description">Description</label>
+                        <textarea id="crime-description" rows="4" placeholder="Detailed description of the crime" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-evidence">Evidence</label>
+                        <input type="file" id="crime-evidence" multiple>
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-officer">Assigned Officer</label>
+                        <select id="crime-officer">
+                            <option value="">Select officer</option>
+                            <option value="1">Officer John Smith</option>
+                            <option value="2">Officer Maria Garcia</option>
+                            <option value="3">Officer David Chen</option>
+                            <option value="4">Officer Sarah Johnson</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="crime-status">Status</label>
+                        <select id="crime-status" required>
+                            <option value="open">Open</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="solved">Solved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="crime-notes">Additional Notes</label>
+                        <textarea id="crime-notes" rows="3" placeholder="Any additional information"></textarea>
+                    </div>
+                    <div class="form-actions full-width">
+                        <button type="reset" class="btn-secondary">Reset</button>
+                        <button type="submit" class="btn-primary">Submit Crime Record</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Officers Tab -->
+            <section id="officers-tab" class="tab-content">
+                <h2>Officers Management</h2>
+                <div class="section-actions">
+                    <button id="add-officer-btn" class="btn-primary"><i class="fas fa-plus"></i> Add New Officer</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Badge No.</th>
+                            <th>Rank</th>
+                            <th>Department</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="officers-table-body">
+                        <!-- This will be filled with JavaScript -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Reports Tab -->
+            <section id="reports-tab" class="tab-content">
+                <h2>Reports & Analytics</h2>
+                <div class="report-options">
+                    <div class="form-group">
+                        <label for="report-type">Report Type</label>
+                        <select id="report-type">
+                            <option value="crime-analysis">Crime Analysis</option>
+                            <option value="monthly-summary">Monthly Summary</option>
+                            <option value="officer-performance">Officer Performance</option>
+                            <option value="area-statistics">Area Statistics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-timeframe">Timeframe</label>
+                        <select id="report-timeframe">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="yearly">Yearly</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <button id="generate-report" class="btn-primary">Generate Report</button>
+                    <button id="export-report" class="btn-secondary"><i class="fas fa-download"></i> Export</button>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>
+                            <span><i class="fas fa-chart-pie chart-icon"></i> Crime Distribution by Type</span>
+                            <div class="chart-actions">
+                                <button title="Download Chart"><i class="fas fa-download"></i></button>
+                                <button title="Refresh Data"><i class="fas fa-sync-alt"></i></button>
+                                <button title="View Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </h3>
+                        <div class="chart-container-inner">
+                            <canvas id="crime-distribution-chart"></canvas>
+                        </div>
+                        <div class="chart-footer">
+                            <span>Last Updated: Yesterday</span>
+                            <span>Source: Crime Database</span>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>
+                            <span><i class="fas fa-chart-bar chart-icon"></i> Monthly Crime Rate</span>
+                            <div class="chart-actions">
+                                <button title="Download Chart"><i class="fas fa-download"></i></button>
+                                <button title="Refresh Data"><i class="fas fa-sync-alt"></i></button>
+                                <button title="View Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </h3>
+                        <div class="chart-container-inner">
+                            <canvas id="monthly-crime-chart"></canvas>
+                        </div>
+                        <div class="chart-footer">
+                            <span>Last Updated: Today</span>
+                            <span>Source: Monthly Reports</span>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>
+                            <span><i class="fas fa-map-marked-alt chart-icon"></i> Crime Hotspots</span>
+                            <div class="chart-actions">
+                                <button title="Download Map"><i class="fas fa-download"></i></button>
+                                <button title="Refresh Data"><i class="fas fa-sync-alt"></i></button>
+                                <button title="View Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </h3>
+                        <div class="chart-container-inner">
+                            <div id="crime-map" class="map-container">
+                                <i class="fas fa-map-marker-alt" style="font-size: 40px; color: var(--danger-color);"></i>
+                            </div>
+                        </div>
+                        <div class="chart-footer">
+                            <span>Updated Weekly</span>
+                            <span>Source: GIS Database</span>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>
+                            <span><i class="fas fa-chart-line chart-icon"></i> Case Resolution Rate</span>
+                            <div class="chart-actions">
+                                <button title="Download Chart"><i class="fas fa-download"></i></button>
+                                <button title="Refresh Data"><i class="fas fa-sync-alt"></i></button>
+                                <button title="View Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </h3>
+                        <div class="chart-container-inner">
+                            <canvas id="resolution-rate-chart"></canvas>
+                        </div>
+                        <div class="chart-footer">
+                            <span>Last Updated: 3 Days Ago</span>
+                            <span>Source: Performance Metrics</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings-tab" class="tab-content">
+                <h2>System Settings</h2>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user-cog"></i> User Profile</h3>
+                        <form id="profile-settings-form">
+                            <div class="form-group">
+                                <label for="user-name">Name</label>
+                                <input type="text" id="user-name" value="Admin User">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-email">Email</label>
+                                <input type="email" id="user-email" value="admin@crimemanagement.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password">Change Password</label>
+                                <input type="password" id="user-password" placeholder="New password">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password-confirm">Confirm Password</label>
+                                <input type="password" id="user-password-confirm" placeholder="Confirm new password">
+                            </div>
+                            <button type="submit" class="btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                        <div class="toggle-option">
+                            <span>Email Notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-option">
+                            <span>System Notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-option">
+                            <span>Case Update Alerts</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-option">
+                            <span>Critical Case Alerts</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-palette"></i> Appearance</h3>
+                        <div class="form-group">
+                            <label for="theme-select">Theme</label>
+                            <select id="theme-select">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="blue">Blue</option>
+                                <option value="system">System Default</option>
+                            </select>
+                        </div>
+                        <div class="toggle-option">
+                            <span>Compact Mode</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-option">
+                            <span>High Contrast</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <button id="apply-theme" class="btn-primary">Apply Changes</button>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-database"></i> System</h3>
+                        <div class="form-group">
+                            <label for="data-retention">Data Retention Period</label>
+                            <select id="data-retention">
+                                <option value="1">1 Year</option>
+                                <option value="2">2 Years</option>
+                                <option value="5" selected>5 Years</option>
+                                <option value="10">10 Years</option>
+                                <option value="indefinite">Indefinite</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="backup-frequency">Backup Frequency</label>
+                            <select id="backup-frequency">
+                                <option value="daily">Daily</option>
+                                <option value="weekly" selected>Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <button id="backup-now" class="btn-secondary"><i class="fas fa-download"></i> Backup Now</button>
+                        <button id="restore-data" class="btn-danger"><i class="fas fa-undo"></i> Restore Data</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
