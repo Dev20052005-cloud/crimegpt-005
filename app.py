@@ -41,10 +41,7 @@ def init_db():
 app = Flask(__name__)
 CORS(app)  # allow calls from your HTML/JS (file:// or http://localhost)
 
-
-@app.before_first_request
-def setup():
-    init_db()
+init_db()
 
 
 @app.get("/api/crimes")
