@@ -367,35 +367,69 @@ function setupAddCrimeForm() {
     const form = $("#add-crime-form");
     if (!form) return;
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
         const type = $("#crime-type").value || "Other";
         const location = $("#crime-location").value || "Unknown";
         const victim = $("#crime-victim").value || "Not Disclosed";
         const status = $("#crime-status").value || "open";
         const description = ($("#crime-description").value || "").slice(0, 80) || "New crime record";
 
-        const id = `CR${String(allCrimes.length + 50).padStart(3, "0")}`;
-        const date = new Date();
-        const datetime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-            date.getDate()
-        ).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+        const now = new Date();
+        const datetime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+            now.getDate()
+        ).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 
-        allCrimes.unshift({
-            id,
-            type,
-            description,
-            victim,
-            location,
-            datetime,
-            status,
-        });
+        // Call Flask backend to persist the crime
+        try {
+            const response = await fetch("http://127.0.0.1:5000/api/crimes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    crime_type: type,
+                    crime_date: datetime,
+                    location,
+                    victim,
+                    suspect: null,
+                    description,
+                    officer_id: null,
+                    status,
+                    notes: null,
+                }),
+            });
 
-        alert("Crime record created (demo only, not persisted).");
-        form.reset();
-        currentCrimePage = 1;
-        renderCrimesTable();
-        renderRecentCases();
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                console.error("Failed to create crime", error);
+                alert("Failed to create crime record on server.");
+                return;
+            }
+
+            const created = await response.json();
+
+            // Also update in-memory demo list so UI stays in sync
+            allCrimes.unshift({
+                id: `CR${String(allCrimes.length + 50).padStart(3, "0")}`,
+                type,
+                description,
+                victim,
+                location,
+                datetime,
+                status,
+            });
+
+            alert("Crime record created and saved to server.");
+            form.reset();
+            currentCrimePage = 1;
+            renderCrimesTable();
+            renderRecentCases();
+        } catch (err) {
+            console.error("Error while creating crime", err);
+            alert("Error connecting to server. Please make sure the backend is running.");
+        }
     });
 }
 
