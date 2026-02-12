@@ -1,0 +1,11 @@
+{
+    "name": "crime-tracker",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Frontend assets for the crime tracker app",
+    "scripts": {
+      "start": "echo \"No Node server. This project uses Flask.\" && exit 0",
+      "build": "echo \"Nothing to build\" && exit 0"
+    },
+    "license": "MIT"
+  }
