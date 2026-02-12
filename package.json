@@ -8,4 +8,10 @@
       "build": "echo \"Nothing to build\" && exit 0"
     },
     "license": "MIT"
+
   }
+{
+  "scripts": {
+    "build": "[my-framework] build --output public"
+  }
+}
